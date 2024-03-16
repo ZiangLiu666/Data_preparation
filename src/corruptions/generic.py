@@ -1,6 +1,6 @@
 from src.basis import TabularCorruption
 import numpy as np
-import pandas as pd
+
 
 class InjectMissingValues(TabularCorruption):
     def __init__(self, column, fraction, sampling='CAR', na_value=np.nan):
