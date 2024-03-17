@@ -1,8 +1,7 @@
 # numerical.py
 import numpy as np
-import pandas as pd
 import random
-from src.basis import TabularCorruption
+from tasks.basis import TabularCorruption
 
 class GaussianNoise(TabularCorruption):
     def __init__(self, column, fraction, sampling='CAR', na_value=np.nan):
