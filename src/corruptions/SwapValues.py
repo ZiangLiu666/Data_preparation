@@ -1,4 +1,4 @@
-from src.basis import TabularCorruption
+from tasks.basis import TabularCorruption
 
 class SwapColumnValues(TabularCorruption):
     def __init__(self, column, swap_with, fraction, sampling='CAR'):

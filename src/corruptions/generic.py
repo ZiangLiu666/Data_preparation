@@ -1,4 +1,4 @@
-from src.basis import TabularCorruption
+from tasks.basis import TabularCorruption
 import numpy as np
 
 
