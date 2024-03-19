@@ -11,20 +11,17 @@ class CustomDataCleaner(BaseEstimator, TransformerMixin):
         pass
     
     def fit(self, X, y=None):
-        # 这里可以加入对数据的学习，比如模式识别、计算缺失值填充的值等
-        # 例如，预计算模式（mode）
-        self.mode_current_ver = X['Current Ver'].mode()[0]
         return self
 
     def transform(self, X, y=None):
         X = X.copy()
+
+        # 删除无关列
+        X.drop(columns=['Last Updated', 'Current Ver', 'Android Ver', 'Content Rating'], inplace=True)
         
         # 使用XGBRegressor填充'Rating'列的缺失值
         impute = IterativeImputer(estimator=XGBRegressor(), max_iter=10, random_state=42)
         X['Rating'] = impute.fit_transform(X[['Rating']])
-
-        # 填充'Current Ver'的缺失值
-        X['Current Ver'].fillna(self.mode_current_ver, inplace=True)
 
         # 仅保留大小以'M','k'或'Varies with device'结尾的行
         size_pattern = r'(\d+M|\d+k|Varies with device)$'
@@ -44,9 +41,6 @@ class CustomDataCleaner(BaseEstimator, TransformerMixin):
 
         # 转换'Reviews'列
         X['Reviews'] = X['Reviews'].apply(lambda x: pd.to_numeric(x.replace("'", '') if "'" in x else x))
-        
-        # 删除无关列
-        X.drop(columns=['Last Updated', 'Current Ver', 'Android Ver', 'Content Rating'], inplace=True)
         
         return X
     
