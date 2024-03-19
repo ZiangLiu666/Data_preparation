@@ -1,5 +1,5 @@
-# numerical.py
 import numpy as np
+import pandas as pd
 import random
 from tasks.basis import TabularCorruption
 
@@ -12,6 +12,9 @@ class GaussianNoise(TabularCorruption):
         df = data.copy(deep=True)
         stddev = np.std(df[self.column])
         scale = random.uniform(1, 5)
+
+        # 确保目标列为浮点数类型
+        df[self.column] = df[self.column].astype(float)
 
         if self.fraction > 0:
             rows = self.sample_rows(data)
@@ -26,6 +29,9 @@ class Scaling(TabularCorruption):
     def transform(self, data):
         df = data.copy(deep=True)
         scale_factor = np.random.choice([10, 100, 1000])
+
+        # 确保目标列为浮点数类型
+        df[self.column] = df[self.column].astype(float)
 
         if self.fraction > 0:
             rows = self.sample_rows(data)
