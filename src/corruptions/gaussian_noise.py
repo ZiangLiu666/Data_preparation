@@ -28,7 +28,7 @@ class Scaling(TabularCorruption):
 
     def transform(self, data):
         df = data.copy(deep=True)
-        scale_factor = np.random.choice([10, 100, 1000])
+        scale_factor = np.random.choice([100, 1000])
 
         # 确保目标列为浮点数类型
         df[self.column] = df[self.column].astype(float)
