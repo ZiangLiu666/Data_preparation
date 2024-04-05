@@ -1,6 +1,10 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 from category_encoders import BinaryEncoder
 import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+from src.data.preprocess import BaseTransformer
+
 
 class CategoryEncoder(BaseEstimator, TransformerMixin):
     def __init__(self):
@@ -31,4 +35,28 @@ class ContentRatingTransformer(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         X['Content Rating'] = X['Content Rating'].map(self.content_rating_mapping)
+        return X
+
+class AppTextTransformer(BaseTransformer):
+    def __init__(self, column, max_features=500):
+        self.column = column
+        self.max_features = max_features
+        self.vectorizer = TfidfVectorizer(lowercase=True, stop_words='english', max_features=self.max_features)
+
+    def fit(self, X, y=None):
+        text_data = X[self.column]
+        self.vectorizer.fit(text_data)
+        return self
+
+    def transform(self, X):
+        text_data = X[self.column]
+        text_features = self.vectorizer.transform(text_data)
+
+        # 将稀疏矩阵转换为DataFrame
+        text_features_df = pd.DataFrame(text_features.toarray(), columns=self.vectorizer.get_feature_names_out())
+
+        # 删除原始文本列，附加TF-IDF特征
+        X = X.drop(columns=[self.column])
+        X = pd.concat([X.reset_index(drop=True), text_features_df.reset_index(drop=True)], axis=1)
+
         return X

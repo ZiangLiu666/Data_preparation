@@ -6,13 +6,14 @@ from sklearn.impute import SimpleImputer
 
 # 假设这些自定义转换器已经在transformers.py文件中定义
 from src.features.transformers import CategoryEncoder, ContentRatingTransformer
-
+from src.features.transformers import AppTextTransformer
 
 def build_features_pipeline():
     """pipeline for feature engineering"""
     numeric_features = ['Reviews', 'Size', 'Installs', 'Price', 'Updated_Month', 'Updated_Year']
     categorical_features = ['Type']
     category_feature = ['Category']
+    text_feature = ['App']
 
     # 数值型特征的填充与缩放
     numeric_transformer = Pipeline(steps=[
@@ -29,6 +30,8 @@ def build_features_pipeline():
     # 自定义特征的转换器
     content_rating_transformer = ContentRatingTransformer()
     category_transformer = CategoryEncoder()
+    # 添加App名称文本特征的转换器
+    text_transformer = AppTextTransformer(column='App')
 
     # ColumnTransformer中整合所有特征处理
     preprocessor = ColumnTransformer(
@@ -40,7 +43,9 @@ def build_features_pipeline():
             # custom transformer for category feature
             ('category', category_transformer, category_feature),
             # custom transformer for content rating feature
-            ('content_rating', content_rating_transformer, ['Content Rating'])
+            ('content_rating', content_rating_transformer, ['Content Rating']),
+            # custom transformer for text feature
+            ('text', text_transformer, text_feature),
         ])
 
     pipeline = Pipeline(steps=[

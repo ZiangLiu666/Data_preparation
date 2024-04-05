@@ -81,11 +81,22 @@ class RatingImputer(BaseEstimator, TransformerMixin):
         return X
 
 
+class DropMissingValues(BaseTransformer):
+    """自定义转换器：删除包含缺失值的行"""
+
+    def __init__(self, column):
+        self.column = column
+
+    def transform(self, X, y=None):
+        return X.dropna(subset=[self.column])
+
+
 data_cleaning_pipeline = Pipeline(steps=[
     ('drop_columns', DropUnnecessaryColumns()),
     ('clean_reviews', CleanReviews()),
     ('clean_installs_price', CleanInstallsAndPrice()),
     ('transform_size', TransformSize()),
     ('transform_last_updated', TransformLastUpdated()),
+    # ('drop_missing_ratings', DropMissingValues(column='Rating')),
     ('impute_rating', RatingImputer(strategy='median')),
 ])
