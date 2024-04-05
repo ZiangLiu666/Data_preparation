@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from category_encoders import BinaryEncoder
 import pandas as pd
+from sklearn.ensemble import IsolationForest
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from src.data.preprocess import BaseTransformer
@@ -91,3 +92,15 @@ class DataPollutionTransformer(BaseTransformer):
         X = text_noise_transformer.transform(X)
 
         return X
+
+import pandas as pd
+class DataRepairTransformer(BaseTransformer):
+    def transform(self, X, y=None):
+        #X_repaired = X.copy()
+        clf = IsolationForest(n_estimators=100, contamination='auto')
+        clf.fit(X)
+        predictions = clf.predict(X)
+        outlier_indices = np.where(predictions == -1)[0]
+        X_repaired = X.drop(index=X.index[outlier_indices]).copy()
+
+        return X_repaired
