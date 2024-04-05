@@ -7,7 +7,7 @@ from sklearn.impute import SimpleImputer
 # 假设这些自定义转换器已经在transformers.py文件中定义
 from src.features.transformers import CategoryEncoder, ContentRatingTransformer
 from src.features.transformers import AppTextTransformer
-from src.features.transformers import DataPollutionTransformer, DataRepairTransformer
+from src.features.transformers import DataPollutionTransformer
 
 
 def build_features_pipeline(pollute_and_repair=False):
@@ -52,7 +52,7 @@ def build_features_pipeline(pollute_and_repair=False):
     if pollute_and_repair:
         pipeline = Pipeline(steps=[
             ('pollute', DataPollutionTransformer()),
-            ('repair', DataRepairTransformer()),
+            # ('repair', DataRepairTransformer()),
             ('preprocessor', preprocessor),
         ])
     else:

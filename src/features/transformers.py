@@ -1,3 +1,4 @@
+import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from category_encoders import BinaryEncoder
 import pandas as pd
@@ -64,7 +65,7 @@ class AppTextTransformer(BaseTransformer):
         return X
 
 
-class ErrorInjectionTransformer(BaseTransformer):
+class DataPollutionTransformer(BaseTransformer):
     def __init__(self, gaussian_fraction=0.3, missing_fraction=0.3, swap_fraction=0.3, text_noise_fraction=0.3):
         self.gaussian_fraction = gaussian_fraction
         self.missing_fraction = missing_fraction
@@ -77,20 +78,16 @@ class ErrorInjectionTransformer(BaseTransformer):
 
     def transform(self, X):
         # Apply Gaussian Noise
-        gaussian_noise_transformer = GaussianNoise(column='numerical_column', fraction=self.gaussian_fraction)
+        gaussian_noise_transformer = GaussianNoise(column='Size', fraction=self.gaussian_fraction)
         X = gaussian_noise_transformer.transform(X)
 
         # Inject Missing Values
-        missing_values_transformer = InjectMissingValues(column='numerical_column', fraction=self.missing_fraction)
+        missing_values_transformer = InjectMissingValues(column='Current Ver', fraction=self.missing_fraction)
         X = missing_values_transformer.transform(X)
 
-        # Swap Column Values
-        swap_values_transformer = SwapColumnValues(column='categorical_column', swap_with='other_categorical_column',
-                                                   fraction=self.swap_fraction)
-        X = swap_values_transformer.transform(X)
 
         # Add Text Noise
-        text_noise_transformer = TextNoise(column='text_column', fraction=self.text_noise_fraction)
+        text_noise_transformer = TextNoise(column='App', fraction=self.text_noise_fraction)
         X = text_noise_transformer.transform(X)
 
         return X
