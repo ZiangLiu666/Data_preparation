@@ -5,9 +5,9 @@ from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 
-from src.corruptions.SwapValues import SwapColumnValues
-from src.corruptions.gaussian_noise import GaussianNoise, Scaling
-from src.corruptions.generic import InjectMissingValues
+from corruptions.SwapValues import SwapColumnValues
+from corruptions.gaussian_noise import GaussianNoise, Scaling
+from corruptions.generic import InjectMissingValues
 
 # Load the dataset
 df = pd.read_csv('/Users/liuziang/PycharmProjects/DP/data_clean/student-scores.csv')

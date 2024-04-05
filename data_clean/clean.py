@@ -13,7 +13,7 @@ def fill_missing_values(df):
 
 def reverse_column_swaps(df):
     """
-    Reverse column swaps if any. This example assumes 'math_score' and 'history_score' might have been swapped.
+    Reverse column swaps. This example assumes 'math_score' and 'history_score' might have been swapped.
     """
     # Logic to identify and reverse the swap.
     # This is just an example and would need actual logic to detect swaps.
