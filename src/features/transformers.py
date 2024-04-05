@@ -60,3 +60,14 @@ class AppTextTransformer(BaseTransformer):
         X = pd.concat([X.reset_index(drop=True), text_features_df.reset_index(drop=True)], axis=1)
 
         return X
+class DataPollutionTransformer(BaseTransformer):
+    def transform(self, X, y=None):
+        # 应用数据污染逻辑
+        X_polluted = X.copy()
+        return X_polluted
+
+class DataRepairTransformer(BaseTransformer):
+    def transform(self, X, y=None):
+        # 应用数据修复逻辑
+        X_repaired = X.copy()
+        return X_repaired
