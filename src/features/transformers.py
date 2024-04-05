@@ -39,7 +39,6 @@ class ContentRatingTransformer(BaseEstimator, TransformerMixin):
     def transform(self, X):
         X['Content Rating'] = X['Content Rating'].map(self.content_rating_mapping)
         return X
-
 class AppTextTransformer(BaseTransformer):
     def __init__(self, column, max_features=500):
         self.column = column
