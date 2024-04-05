@@ -67,7 +67,7 @@ class AppTextTransformer(BaseTransformer):
 
 
 class DataPollutionTransformer(BaseTransformer):
-    def __init__(self, gaussian_fraction=0.3, missing_fraction=0.3, swap_fraction=0.3, text_noise_fraction=0.3):
+    def __init__(self, gaussian_fraction=0.2, missing_fraction=0.2, swap_fraction=0.2, text_noise_fraction=0.2):
         self.gaussian_fraction = gaussian_fraction
         self.missing_fraction = missing_fraction
         self.swap_fraction = swap_fraction
@@ -83,7 +83,7 @@ class DataPollutionTransformer(BaseTransformer):
         X = gaussian_noise_transformer.transform(X)
 
         # Inject Missing Values
-        missing_values_transformer = InjectMissingValues(column='Current Ver', fraction=self.missing_fraction)
+        missing_values_transformer = InjectMissingValues(column='Size', fraction=self.missing_fraction)
         X = missing_values_transformer.transform(X)
 
         # Inject Missing Values
