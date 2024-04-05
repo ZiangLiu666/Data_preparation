@@ -43,19 +43,18 @@ def evaluate_model(model, X_train, X_test, y_train, y_test):
     return scores
 
 
-def train_and_evaluate(X, y):
-
+def train_and_evaluate(X, y, pollute_and_repair=False):
     # Split the dataset into training and test sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Initialize the feature engineering pipeline
-    feature_pipeline = build_features_pipeline()
+    # Initialize the feature engineering pipeline with or without pollution and repair
+    feature_pipeline = build_features_pipeline(pollute_and_repair=pollute_and_repair)
 
     # Define the models to train
     models = {
         'LinearRegression': LinearRegression(),
         'KNeighborsRegressor': KNeighborsRegressor(),
-        'RandomForestRegressor': RandomForestRegressor(random_state=42)
+        'RandomForestRegressor': RandomForestRegressor(random_state=42),
     }
 
     # Train and evaluate each model
@@ -64,10 +63,11 @@ def train_and_evaluate(X, y):
         # Create a pipeline that includes feature processing and the model
         full_pipeline = Pipeline([
             ('features', feature_pipeline),
-            ('model', model)
+            ('model', model),
         ])
 
         # Evaluate the model
         results[name] = evaluate_model(full_pipeline, X_train, X_test, y_train, y_test)
 
     return results
+

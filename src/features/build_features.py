@@ -7,30 +7,31 @@ from sklearn.impute import SimpleImputer
 # 假设这些自定义转换器已经在transformers.py文件中定义
 from src.features.transformers import CategoryEncoder, ContentRatingTransformer
 from src.features.transformers import AppTextTransformer
+from src.features.transformers import DataPollutionTransformer, DataRepairTransformer
 
-def build_features_pipeline():
+
+def build_features_pipeline(pollute_and_repair=False):
     """pipeline for feature engineering"""
     numeric_features = ['Reviews', 'Size', 'Installs', 'Price', 'Updated_Month', 'Updated_Year']
     categorical_features = ['Type']
     category_feature = ['Category']
     text_feature = ['App']
 
-    # 数值型特征的填充与缩放
+    # numeric features pipeline
     numeric_transformer = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='median')),
         ('scaler', StandardScaler())
     ])
 
-    # 分类型特征的填充与编码
+    # categorical features pipeline
     categorical_transformer = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='most_frequent')),
         ('onehot', OneHotEncoder(handle_unknown='ignore'))
     ])
 
-    # 自定义特征的转换器
+    # custom transformer
     content_rating_transformer = ContentRatingTransformer()
     category_transformer = CategoryEncoder()
-    # 添加App名称文本特征的转换器
     text_transformer = AppTextTransformer(column='App')
 
     # ColumnTransformer中整合所有特征处理
@@ -46,10 +47,17 @@ def build_features_pipeline():
             ('content_rating', content_rating_transformer, ['Content Rating']),
             # custom transformer for text feature
             ('text', text_transformer, text_feature),
-        ])
+        ],remainder='drop')
 
-    pipeline = Pipeline(steps=[
-        ('preprocessor', preprocessor)
-    ])
+    if pollute_and_repair:
+        pipeline = Pipeline(steps=[
+            ('pollute', DataPollutionTransformer()),
+            ('repair', DataRepairTransformer()),
+            ('preprocessor', preprocessor),
+        ])
+    else:
+        pipeline = Pipeline(steps=[
+            ('preprocessor', preprocessor),
+        ])
 
     return pipeline

@@ -27,12 +27,25 @@ if __name__ == "__main__":
     X = df_cleaned.drop('Rating', axis=1)  # 移除Rating列作为特征
     y = df_cleaned['Rating']  # 目标变量
 
-    # 训练模型并评估结果
-    results = train_and_evaluate(X, y)
+    # 对比不使用数据污染和修复的情况
+    results_without_pollution = train_and_evaluate(X, y, pollute_and_repair=False)
+
+    # 对比使用数据污染和修复的情况
+    results_with_pollution = train_and_evaluate(X, y, pollute_and_repair=True)
 
     # 打印评估结果
-    for model_name, scores in results.items():
+    for model_name, scores in results_without_pollution.items():
         print(f"Results for {model_name}:")
+        print(f"Train RMSE: {scores['train']['RMSE']:.2f}")
+        print(f"Train MAE: {scores['train']['MAE']:.2f}")
+        print(f"Train R2: {scores['train']['R2']:.2f}")
+        print(f"Test RMSE: {scores['test']['RMSE']:.2f}")
+        print(f"Test MAE: {scores['test']['MAE']:.2f}")
+        print(f"Test R2: {scores['test']['R2']:.2f}")
+        print('---------------------------------')
+
+    for model_name, scores in results_with_pollution.items():
+        print(f"Results for {model_name} with pollution and repair:")
         print(f"Train RMSE: {scores['train']['RMSE']:.2f}")
         print(f"Train MAE: {scores['train']['MAE']:.2f}")
         print(f"Train R2: {scores['train']['R2']:.2f}")
