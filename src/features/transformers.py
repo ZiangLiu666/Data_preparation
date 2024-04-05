@@ -86,6 +86,15 @@ class DataPollutionTransformer(BaseTransformer):
         missing_values_transformer = InjectMissingValues(column='Current Ver', fraction=self.missing_fraction)
         X = missing_values_transformer.transform(X)
 
+        # Inject Missing Values
+        missing_values_transformer = InjectMissingValues(column='Size', fraction=self.missing_fraction)
+        X = missing_values_transformer.transform(X)
+
+        # Filling NaN
+        def impute_median(series):
+            return series.fillna(series.median())
+        X['Size'] = X['Size'].transform(impute_median)
+
 
         # Add Text Noise
         text_noise_transformer = TextNoise(column='App', fraction=self.text_noise_fraction)
@@ -102,5 +111,5 @@ class DataRepairTransformer(BaseTransformer):
         predictions = clf.predict(X)
         outlier_indices = np.where(predictions == -1)[0]
         X_repaired = X.drop(index=X.index[outlier_indices]).copy()
-
         return X_repaired
+

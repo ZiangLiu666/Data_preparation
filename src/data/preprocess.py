@@ -86,7 +86,6 @@ class DropMissingValues(BaseTransformer):
 
     def __init__(self, column):
         self.column = column
-
     def transform(self, X, y=None):
         return X.dropna(subset=[self.column])
 
