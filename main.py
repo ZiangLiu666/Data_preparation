@@ -5,9 +5,9 @@ from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.metrics import accuracy_score
 
 # 假设这些类导入语句有效
-from corruptions.gaussian_noise import GaussianNoise
-from corruptions.generic import InjectMissingValues
-from corruptions.gaussian_noise import Scaling
+from src.corruptions.gaussian_noise import GaussianNoise
+from src.corruptions.generic import InjectMissingValues
+from src.corruptions.gaussian_noise import Scaling
 
 # 加载数据集
 # 这里使用的是示意性的导入方式，实际应用中请替换为实际的数据加载方式

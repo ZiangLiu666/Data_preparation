@@ -4,7 +4,10 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from src.data.preprocess import BaseTransformer
-
+from src.corruptions.gaussian_noise import GaussianNoise
+from src.corruptions.generic import InjectMissingValues
+from src.corruptions.SwapValues import SwapColumnValues
+from src.corruptions.text_noise import TextNoise
 
 class CategoryEncoder(BaseEstimator, TransformerMixin):
     def __init__(self):
@@ -58,5 +61,37 @@ class AppTextTransformer(BaseTransformer):
         # 删除原始文本列，附加TF-IDF特征
         X = X.drop(columns=[self.column])
         X = pd.concat([X.reset_index(drop=True), text_features_df.reset_index(drop=True)], axis=1)
+
+        return X
+
+
+class ErrorInjectionTransformer(BaseTransformer):
+    def __init__(self, gaussian_fraction=0.3, missing_fraction=0.3, swap_fraction=0.3, text_noise_fraction=0.3):
+        self.gaussian_fraction = gaussian_fraction
+        self.missing_fraction = missing_fraction
+        self.swap_fraction = swap_fraction
+        self.text_noise_fraction = text_noise_fraction
+
+    def fit(self, X, y=None):
+        # No fitting necessary for error injection
+        return self
+
+    def transform(self, X):
+        # Apply Gaussian Noise
+        gaussian_noise_transformer = GaussianNoise(column='numerical_column', fraction=self.gaussian_fraction)
+        X = gaussian_noise_transformer.transform(X)
+
+        # Inject Missing Values
+        missing_values_transformer = InjectMissingValues(column='numerical_column', fraction=self.missing_fraction)
+        X = missing_values_transformer.transform(X)
+
+        # Swap Column Values
+        swap_values_transformer = SwapColumnValues(column='categorical_column', swap_with='other_categorical_column',
+                                                   fraction=self.swap_fraction)
+        X = swap_values_transformer.transform(X)
+
+        # Add Text Noise
+        text_noise_transformer = TextNoise(column='text_column', fraction=self.text_noise_fraction)
+        X = text_noise_transformer.transform(X)
 
         return X

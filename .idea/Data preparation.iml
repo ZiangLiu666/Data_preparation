@@ -13,7 +13,6 @@
         <option value="$MODULE_DIR$/src/data" />
         <option value="$MODULE_DIR$/src/models" />
         <option value="$MODULE_DIR$/src/features" />
-        <option value="$MODULE_DIR$/src/visualization" />
       </list>
     </option>
   </component>
